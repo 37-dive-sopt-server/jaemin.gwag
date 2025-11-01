@@ -13,23 +13,32 @@ import com.divesoptserver37.domain.repository.memory.MemoryMemberRepository;
 import com.divesoptserver37.domain.repository.util.ExecutorManager;
 import com.divesoptserver37.domain.repository.util.IdGenerator;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+
 @Repository
 public class MemberRepositoryFacade implements MemberRepository {
 	private final FileMemberRepository fileMemberRepository;
 	private final MemoryMemberRepository memoryMemberRepository;
-	private final ExecutorService executor = ExecutorManager.getExecutor();
+	private final ExecutorService executor;
 
 	public MemberRepositoryFacade(
 		FileMemberRepository fileMemberRepository,
-		MemoryMemberRepository memoryMemberRepository) {
+		MemoryMemberRepository memoryMemberRepository,
+		ExecutorService executor) {
 		this.fileMemberRepository = fileMemberRepository;
 		this.memoryMemberRepository = memoryMemberRepository;
+		this.executor = executor;
 	}
+
+	@PostConstruct
 	public void init() {
 		Map<Long, Member> initialData = fileMemberRepository.load();
 		memoryMemberRepository.init(initialData);
 		IdGenerator.init(initialData.keySet().stream().max(Long::compareTo).orElse(0L));
 	}
+
+
 	public Member save(Member member) {
 		executor.submit(() -> fileMemberRepository.save(member));
 		return memoryMemberRepository.save(member);
