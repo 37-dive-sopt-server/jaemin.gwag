@@ -27,6 +27,7 @@ public class ArticleCustomRepositoryImpl implements ArticleCustomRepository {
 				titleContain(title),
 				authorContain(name)
 			)
+			.orderBy(article.createdAt.desc())
 			.fetch();
 
 	}
