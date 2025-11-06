@@ -1,29 +1,30 @@
-package com.divesoptserver37.domain.service;
+package com.divesoptserver37.domain.member.service;
 
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.divesoptserver37.domain.dto.request.CreateMemberRequest;
-import com.divesoptserver37.domain.dto.response.MemberInfoResponse;
-import com.divesoptserver37.domain.entity.Gender;
-import com.divesoptserver37.domain.entity.Member;
-import com.divesoptserver37.domain.repository.memory.MemoryMemberRepository;
-import com.divesoptserver37.domain.repository.util.IdGenerator;
+import com.divesoptserver37.domain.member.dto.request.CreateMemberRequest;
+import com.divesoptserver37.domain.member.dto.response.MemberInfoResponse;
+import com.divesoptserver37.domain.member.entity.Gender;
+import com.divesoptserver37.domain.member.entity.Member;
+import com.divesoptserver37.domain.member.repository.MemberRepository;
 import com.divesoptserver37.global.exception.BadRequestException;
 import com.divesoptserver37.global.exception.NotFoundException;
 import com.divesoptserver37.global.exception.code.ErrorCode;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MemberService {
 
-	private final MemoryMemberRepository memberRepository;
+	private final MemberRepository memberRepository;
 
-	public MemberService(MemoryMemberRepository memberRepository) {
-		this.memberRepository = memberRepository;
-	}
-
+	@Transactional
 	public void createMember(CreateMemberRequest createMemberRequest) {
 
 		if(memberRepository.existsByEmail(createMemberRequest.email())) {
@@ -31,7 +32,6 @@ public class MemberService {
 		}
 
 		Member newMember = Member.create(
-			IdGenerator.generate(),
 			createMemberRequest.name(),
 			createMemberRequest.email(),
 			createMemberRequest.birthday(),
@@ -42,9 +42,7 @@ public class MemberService {
 	}
 
 	public MemberInfoResponse getMember(final Long userId){
-		Member member = memberRepository.findById(userId)
-			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-
+		Member member = getMemberById(userId);
 		return MemberInfoResponse.from(member);
 	}
 
@@ -57,10 +55,16 @@ public class MemberService {
 		return memberInfoResponseList;
 	}
 
+	@Transactional
 	public void delete(final Long memberId) {
 		if(!memberRepository.findById(memberId).isPresent()) {
 			throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
 		}
 		memberRepository.deleteById(memberId);
+	}
+
+	public Member getMemberById(final Long memberId) {
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 	}
 }

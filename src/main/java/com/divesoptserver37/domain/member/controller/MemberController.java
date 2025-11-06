@@ -1,6 +1,5 @@
-package com.divesoptserver37.domain.controller;
+package com.divesoptserver37.domain.member.controller;
 
-import static com.divesoptserver37.global.util.Validator.*;
 
 import java.util.List;
 
@@ -13,28 +12,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.divesoptserver37.domain.dto.request.CreateMemberRequest;
-import com.divesoptserver37.domain.dto.response.MemberInfoResponse;
-import com.divesoptserver37.domain.service.MemberService;
+import com.divesoptserver37.domain.member.dto.request.CreateMemberRequest;
+import com.divesoptserver37.domain.member.dto.response.MemberInfoResponse;
+import com.divesoptserver37.domain.member.service.MemberService;
 import com.divesoptserver37.global.exception.code.SuccessCode;
 import com.divesoptserver37.global.exception.dto.SuccessResponse;
-import com.divesoptserver37.global.util.Validator;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class MemberController {
 
 	private final MemberService memberService;
 
-	public MemberController(MemberService memberService) {
-		this.memberService = memberService;
-	}
-
 	@PostMapping
 	public ResponseEntity<SuccessResponse<?>> createMember(
-		@RequestBody CreateMemberRequest createMemberRequest
+		@Valid @RequestBody CreateMemberRequest createMemberRequest
 	) {
-		validate(createMemberRequest);
 		memberService.createMember(createMemberRequest);
 		return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_CREATE));
 

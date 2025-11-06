@@ -1,9 +1,9 @@
-package com.divesoptserver37.domain.dto.response;
+package com.divesoptserver37.domain.member.dto.response;
 
 import java.time.LocalDate;
 
-import com.divesoptserver37.domain.entity.Gender;
-import com.divesoptserver37.domain.entity.Member;
+import com.divesoptserver37.domain.member.entity.Gender;
+import com.divesoptserver37.domain.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public record MemberInfoResponse(
