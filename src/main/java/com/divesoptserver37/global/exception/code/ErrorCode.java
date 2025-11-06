@@ -14,6 +14,7 @@ public enum ErrorCode {
 	MISSING_HEADER(HttpStatus.BAD_REQUEST, "E400004", "필수 요청 헤더가 누락되었습니다."),
 	TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "E400005", "요청 값 타입이 올바르지 않습니다"),
 	ALREADAY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "E400006", "이미 존재하는 이메일입니다"),
+	ALREADY_EXIST_TITLE(HttpStatus.BAD_REQUEST, "E400007", "이미 존재하는 제목입니다"),
 
 
 
