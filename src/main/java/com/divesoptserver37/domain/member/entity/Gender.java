@@ -1,18 +1,15 @@
-package com.divesoptserver37.domain.entity;
+package com.divesoptserver37.domain.member.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Gender {
 	MALE("남자"),
 	FEMALE("여자");
 
 	private final String value;
-
-	Gender(String value) {
-		this.value = value;
-	}
-
-	public String getValue() {
-		return value;
-	}
 
 	public static Gender fromValue(String value) {
 		for (Gender gender : Gender.values()) {
